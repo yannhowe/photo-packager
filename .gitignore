@@ -1,0 +1,13 @@
+.DS_Store
+tmp/
+
+# Generated QA and downloadable PDFs. Keep the one-pager used by Docker.
+output/pdf/*.pdf
+!output/pdf/photo-case-studio-one-pager.pdf
+
+# Local editor and environment files
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/

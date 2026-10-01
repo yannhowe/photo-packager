@@ -1,0 +1,8 @@
+services:
+  instax-wide-box-maker:
+    build: .
+    image: instax-wide-box-maker:latest
+    container_name: instax-wide-box-maker
+    ports:
+      - "127.0.0.1:8092:80"
+    restart: unless-stopped
