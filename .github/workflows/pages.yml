@@ -28,7 +28,8 @@ jobs:
       - name: Assemble static site
         run: |
           mkdir -p site/assets/renders site/output/pdf
-          cp index.html one-pager.html styles.css app.js site/
+          cp index.html studio.html commission.html one-pager.html styles.css site.css app.js hero-scene.js commission.js site-config.js site-tip.js site/
+          cp assets/sleeve-sequence.svg assets/package-three-quarter.png site/assets/
           cp assets/renders/* site/assets/renders/
           cp output/pdf/photo-case-studio-one-pager.pdf site/output/pdf/
           touch site/.nojekyll

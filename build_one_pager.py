@@ -184,7 +184,7 @@ for i, (num, title, desc) in enumerate(steps):
 # Center hero: case and metadata
 mid_y = H - 190*MM
 rounded(c, 24*MM, mid_y, 162*MM, 58*MM, 8, HexColor("#F8F2E5"), LINE)
-c.drawImage(ImageReader(str(ASSETS / "photo-case-open.png")), 28*MM, mid_y + 5*MM, 78*MM, 48*MM, preserveAspectRatio=True, anchor="c", mask="auto")
+c.drawImage(ImageReader(str(ASSETS / "photo-case-exploded.png")), 28*MM, mid_y + 5*MM, 78*MM, 48*MM, preserveAspectRatio=True, anchor="c", mask="auto")
 text(c, "A case that fits the stack", 116*MM, mid_y + 43*MM, 14, INK, "Helvetica-Bold")
 text(c, "Photo count, media thickness and", 116*MM, mid_y + 34*MM, 7.4, MUTED)
 text(c, "paper stock determine the spine,", 116*MM, mid_y + 29*MM, 7.4, MUTED)
@@ -203,8 +203,8 @@ feature(c, 105*MM, features_y - 20*MM, 4, "Optional GPS", "Coordinates stay loca
 c.setFillColor(INK)
 c.rect(0, 0, W, 24*MM, fill=1, stroke=0)
 text(c, "DESIGN. PREVIEW. PRINT. FOLD.", 24*MM, 14*MM, 10, PAPER, "Helvetica-Bold")
-text(c, "yanns-macbook-air-2.tail881685.ts.net/instax-box/", 24*MM, 8*MM, 6.5, HexColor("#D6CEC5"))
-qr_code = qr.QrCodeWidget("https://yanns-macbook-air-2.tail881685.ts.net/instax-box/")
+text(c, "yannhowe.github.io/photo-packager/", 24*MM, 8*MM, 6.5, HexColor("#D6CEC5"))
+qr_code = qr.QrCodeWidget("https://yannhowe.github.io/photo-packager/")
 bounds = qr_code.getBounds()
 size = 16*MM
 drawing = Drawing(size, size, transform=[size/(bounds[2]-bounds[0]),0,0,size/(bounds[3]-bounds[1]),0,0])

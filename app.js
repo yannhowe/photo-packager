@@ -19,14 +19,14 @@ const defaults = {
   photoThickness: "0.24", sheetSize: "a4", printPaper: "glossy", backOrientation: "epson-left-right", autoPhotoOrientation: true, showPrintGuides: true, pageMargin: "6", photoGap: "4", backOffsetX: "0", backOffsetY: "0",
   metaDate: true, metaCamera: true, metaExposure: true, metaLocation: false, metaFilename: true, metaPixels: false, designStyle: "bureau",
   casePreviewFace: "outside", printCoverArtwork: true, showPhotoCount: true, printSideArtwork: true, showFoldInstructions: true, sideLabel: "PHOTO ARCHIVE", caseMaterial: "0.21", caseThickness: "0.21",
-  quantity: "Photo Set", titleOne: "Instax Wide", titleTwo: "Photo Pack", subtitle: "Wide-format archive",
+  quantity: "Photo Set", titleOne: "New Zealand", titleTwo: "Roadtrip", subtitle: "Instax Wide archive",
   paperColor: "#f5e8c8", inkColor: "#c94f3f",
 };
 const settingsIds = Object.keys(defaults);
 const sizes = { "instax-mini": [54, 86], "instax-wide": [108, 86], "4r": [102, 152], "4r-landscape": [152, 102], "6x4": [152, 102], square: [86, 86] };
 const presetDefaults = {
   "instax-mini": { titleOne: "Instax Mini", titleTwo: "Photo Pack", subtitle: "Pocket archive", quantity: "Photo Set", pageMargin: "6", photoGap: "4", photoMaterial: "0.28", caseMaterial: "0.21" },
-  "instax-wide": { titleOne: "Instax Wide", titleTwo: "Photo Pack", subtitle: "Wide-format archive", quantity: "Photo Set", pageMargin: "6", photoGap: "4", photoMaterial: "0.28", caseMaterial: "0.21" },
+  "instax-wide": { titleOne: "New Zealand", titleTwo: "Roadtrip", subtitle: "Instax Wide archive", quantity: "Photo Set", pageMargin: "6", photoGap: "4", photoMaterial: "0.28", caseMaterial: "0.21" },
   "4r": { titleOne: "4R", titleTwo: "Photo Pack", subtitle: "Print archive", quantity: "Photo Set", pageMargin: "3", photoGap: "0", photoMaterial: "0.24", caseMaterial: "0.21" },
   "4r-landscape": { titleOne: "4R", titleTwo: "Photo Pack", subtitle: "Landscape archive", quantity: "Photo Set", pageMargin: "3", photoGap: "0", photoMaterial: "0.24", caseMaterial: "0.21" },
   square: { titleOne: "Square", titleTwo: "Photo Pack", subtitle: "Square archive", quantity: "Photo Set", pageMargin: "6", photoGap: "4", photoMaterial: "0.24", caseMaterial: "0.21" },
@@ -302,7 +302,7 @@ function pageSvg(kind, pageIndex, print = false) {
 }
 
 function dateRange() {
-  if (!photos.length) return "Add photos to build this archive";
+  if (!photos.length) return "Select photos to begin";
   const times = photos.map((p) => { const m = p.exif.date && p.exif.date.match(/^(\d{4}):(\d{2}):(\d{2})/); return m ? new Date(`${m[1]}-${m[2]}-${m[3]}T12:00:00`).getTime() : p.file.lastModified; }).sort((a,b) => a-b);
   const fmt = (t) => new Date(t).toLocaleDateString([], { year: "numeric", month: "short", day: "numeric" });
   return fmt(times[0]) === fmt(times.at(-1)) ? fmt(times[0]) : `${fmt(times[0])} — ${fmt(times.at(-1))}`;
@@ -524,6 +524,7 @@ async function downloadExactPdf(markup,filename,button,preserveLandscape=false) 
     }
     setTimeout(() => URL.revokeObjectURL(href),180000);
     els.fitMessage.classList.remove("warning"); els.fitMessage.textContent = `${pdfTab ? "Opened" : "Downloaded"} ${filename} as a ${page.w} × ${page.h} mm PDF. Your selected photos remain in this tab.`;
+    if (window.PhotoPackagerTip) window.PhotoPackagerTip.showToast();
   } catch (error) {
     if (pdfTab && !pdfTab.closed) pdfTab.close();
     els.fitMessage.classList.add("warning"); els.fitMessage.textContent = error.message || "Could not build the PDF.";

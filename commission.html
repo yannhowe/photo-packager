@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Print and ship — Photo Packager</title>
+    <meta name="description" content="Have a photo set printed and posted for $88, with an optional tip." />
+    <meta name="theme-color" content="#c65345" />
+    <meta property="og:title" content="Print and ship — Photo Packager" />
+    <meta property="og:description" content="A demonstration order flow for having a photo set printed, packaged and posted." />
+    <meta property="og:image" content="./assets/renders/photo-case-closed.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./site.css?v=6" />
+  </head>
+  <body class="site">
+    <main class="sheet">
+      <header class="site-rail">
+        <a href="./">Photo Packager</a>
+        <span>Print and ship</span>
+        <nav>
+          <a href="./">Home</a>
+          <a href="./studio.html">Studio</a>
+          <a href="./commission.html" aria-current="page">Print &amp; ship $88</a>
+        </nav>
+      </header>
+      <div class="sheet-pad">
+        <div class="meta-row">
+          <span>$88 includes prints, sleeve, and postage</span>
+          <span>Demonstration order flow</span>
+        </div>
+        <hr class="rule" />
+        <p class="stamp">Photos follow by private link</p>
+        <h1 class="display" style="font-size:clamp(3.2rem,10vw,6.2rem)">Print and <span>ship</span></h1>
+        <p class="lead">$88 covers prints, the sleeve, and tracked postage for up to 24 photographs. After payment I will ask for a private iCloud, Dropbox, or WeTransfer link — then print, fold, and post. Photos are deleted once the parcel is on its way. A tip is optional.</p>
+
+        <hr class="rule thin" />
+
+        <form id="orderForm" class="stack">
+          <div class="form-grid">
+            <label>Name<input id="name" name="name" autocomplete="name" required /></label>
+            <label>Email<input id="email" name="email" type="email" autocomplete="email" required /></label>
+            <label class="span-2">Shipping address<input id="address" name="address" autocomplete="street-address" required /></label>
+            <label>City<input id="city" name="city" autocomplete="address-level2" required /></label>
+            <label>Postal code<input id="postal" name="postal" autocomplete="postal-code" required /></label>
+            <label>Country<input id="country" name="country" autocomplete="country-name" required /></label>
+            <label>Format
+              <select id="format" name="format">
+                <option value="instax-wide">Instax Wide</option>
+                <option value="instax-mini">Instax Mini</option>
+                <option value="4r">4R portrait</option>
+                <option value="4r-landscape">4R landscape</option>
+                <option value="square">Square</option>
+              </select>
+            </label>
+            <label>Number of photos
+              <input id="count" name="count" type="number" min="1" max="24" value="8" required />
+            </label>
+            <label class="span-2">Cover title (optional)<input id="title" name="title" maxlength="40" placeholder="Summer, Como" /></label>
+            <label class="span-2">Notes<textarea id="notes" name="notes" placeholder="Paper preference, duplex printer notes, or a gift message."></textarea></label>
+          </div>
+
+          <p class="section-kicker" style="margin-top:28px">Optional</p>
+          <h2 class="section">Leave a tip</h2>
+          <div class="tips" role="group" aria-label="Tip amount">
+            <button class="tip" type="button" data-tip="0" aria-pressed="true">No tip</button>
+            <button class="tip" type="button" data-tip="8" aria-pressed="false">$8</button>
+            <button class="tip" type="button" data-tip="18" aria-pressed="false">$18</button>
+            <button class="tip" type="button" data-tip="28" aria-pressed="false">$28</button>
+          </div>
+
+          <div class="totals" aria-live="polite">
+            <div><span>Print &amp; post</span><span id="baseTotal">$88</span></div>
+            <div><span>Tip</span><span id="tipTotal">$0</span></div>
+            <div class="grand"><span>Amount due</span><span id="grandTotal">$88</span></div>
+          </div>
+
+          <label class="check span-2">
+            <input id="consent" type="checkbox" required />
+            <span>I print this myself. After payment, send a private photo link. Files are used only for printing and deleted after dispatch. The free studio never uploads files.</span>
+          </label>
+
+          <div class="actions" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px">
+            <button class="btn" type="submit">Place order</button>
+            <a class="btn ghost" href="./studio.html">I will print it myself</a>
+          </div>
+        </form>
+
+        <p class="notice" id="payNotice">Place the order, then pay if a payment button appears. Send photographs afterwards with a private link — not on this page.</p>
+
+        <section class="accession" id="accession" hidden>
+          <p class="stamp">Order</p>
+          <h2 id="accessionTitle">Your order</h2>
+          <pre class="slip" id="slip"></pre>
+          <div class="actions" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:18px">
+            <a class="btn" id="payButton" href="#" hidden>Pay now</a>
+            <a class="btn ghost" id="mailButton" href="#">Email this slip</a>
+            <button class="btn ghost" id="copyButton" type="button">Copy slip</button>
+          </div>
+        </section>
+
+        <footer class="site-footer">
+          <span>Photos are not stored on this page</span>
+          <a href="./">Home</a>
+        </footer>
+      </div>
+    </main>
+    <script src="./site-config.js"></script>
+    <script src="./commission.js?v=3"></script>
+  </body>
+</html>

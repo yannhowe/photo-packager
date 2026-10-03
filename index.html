@@ -3,173 +3,136 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>Photo Packager</title>
-    <meta name="description" content="Turn photo sets into printable photographs, metadata backs, and fitted no-glue packages." />
-    <meta name="theme-color" content="#c94f3f" />
-    <link rel="stylesheet" href="./styles.css?v=8" />
+    <title>Photo Packager — print, fold, keep</title>
+    <meta name="description" content="Free in-browser tool for printable photos, matching backs, and a no-glue sleeve. Or have a set printed and shipped for $88." />
+    <meta name="theme-color" content="#c65345" />
+    <meta property="og:title" content="Photo Packager — print, fold, keep" />
+    <meta property="og:description" content="Free in-browser tool for printable photos, matching backs, and a no-glue sleeve. Or have a set printed and shipped for $88." />
+    <meta property="og:image" content="./assets/renders/photo-case-closed.png" />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./site.css?v=9" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+        }
+      }
+    </script>
   </head>
-  <body>
-    <main class="app-shell">
-      <header class="toolbar">
-        <div class="brand">
-          <p class="eyebrow">Print + package</p>
-          <h1>Photo Packager</h1>
-          <p>Print the photographs, their story, and a fitted no-glue package.</p>
-        </div>
-        <div class="actions">
-          <button id="advancedButton" class="secondary" type="button">Advanced settings</button>
-          <button id="resetButton" class="secondary" type="button">Reset</button>
-          <button id="printCalibrationButton" class="secondary" type="button">Download size test PDF</button>
-          <button id="downloadCasePdfButton" type="button">Download exact case PDF</button>
-          <button id="downloadButton" class="secondary advanced-only" type="button">Download case SVG</button>
-          <button id="printCurrentButton" class="secondary advanced-only" type="button">Print current view</button>
-          <button id="printCaseDuplexButton" class="secondary advanced-only" type="button">Browser-print case (may scale)</button>
-          <button id="printDuplexButton" type="button">Download exact photos PDF</button>
-        </div>
+  <body class="site">
+    <main class="sheet">
+      <header class="site-rail">
+        <a href="./">Photo Packager</a>
+        <span>Browser-only studio</span>
+        <nav>
+          <a href="./" aria-current="page">Home</a>
+          <a href="./studio.html">Studio</a>
+          <a href="./commission.html">Print &amp; ship $88</a>
+        </nav>
       </header>
 
-      <nav class="view-tabs" aria-label="Preview">
-        <button class="active" data-view="overview" type="button">All previews</button>
-        <button data-view="fronts" type="button">Photo fronts</button>
-        <button data-view="backs" type="button">Metadata backs</button>
-        <button data-view="case" type="button">Container</button>
-      </nav>
+      <div class="sheet-pad">
+        <div class="meta-row">
+          <span>Files stay on your device</span>
+          <span>A4 printer · scissors · no glue</span>
+        </div>
+        <hr class="rule" />
+        <h1 class="display">Photo <span>Packager</span></h1>
+        <p class="lead">Turn a photo set into prints, matching backs, and a fitted sleeve. Use the studio free at home. If you would rather I print and post it, the fee is $88.</p>
+        <div class="intro-actions">
+          <a class="btn" href="./studio.html">Open the free studio</a>
+          <a class="btn ghost" href="./commission.html">Print and ship · $88</a>
+        </div>
 
-      <section class="workspace">
-        <aside class="controls" aria-label="Project settings">
-          <section class="control-group import-group">
-            <div class="section-heading"><h2>1. Photos</h2><span id="photoCount">0 selected</span></div>
-            <div class="file-options">
-              <label class="file-button"><input id="photoInput" type="file" accept="image/*" multiple />Select all images</label>
-              <label class="file-button alternate"><input id="singlePhotoInput" type="file" accept="image/*" />Add one at a time</label>
+        <section class="hero" aria-label="How the sleeve is assembled">
+          <div class="viewport">
+            <canvas id="heroCanvas" aria-label="Demonstration of stacking photographs and folding the sleeve"></canvas>
+            <div class="viewport-frame"></div>
+            <div class="viewport-meta top">
+              <span id="sceneId">New Zealand Roadtrip</span>
+              <span id="sceneStage">Sleeve</span>
             </div>
-            <p id="pickerStatus" class="privacy-note">Files and metadata stay on this device. “Add one at a time” is the iPhone/iCloud fallback.</p>
-            <div id="photoList" class="photo-list"></div>
-          </section>
-
-          <section class="control-group">
-            <h2>2. Package format</h2>
-            <label>Size preset
-              <select id="sizePreset">
-                <option value="instax-mini">Instax Mini - 54 x 86 mm</option>
-                <option value="instax-wide" selected>Instax Wide - 108 x 86 mm</option>
-                <option value="4r">4R portrait - 102 x 152 mm (A4 case compatible)</option>
-                <option value="4r-landscape">4R landscape - 152 x 102 mm</option>
-                <option value="square">Square - 86 x 86 mm</option>
-                <option value="custom">Custom</option>
-              </select>
-            </label>
-            <p class="privacy-note">The photo layout and box are sized together. Each preset starts with recommended paper, spacing, and cover text.</p>
-            <div class="inline-fields advanced-only">
-              <label>Width (mm)<input id="photoWidth" type="number" min="30" max="190" step="0.5" value="108" /></label>
-              <label>Height (mm)<input id="photoHeight" type="number" min="30" max="190" step="0.5" value="86" /></label>
+            <div class="viewport-meta bottom">
+              <span>No glue</span>
+              <span>One locking tab</span>
             </div>
-            <label class="advanced-only">Crop
-              <select id="cropMode"><option value="cover" selected>Fill and crop</option><option value="contain">Show whole image</option></select>
-            </label>
-            <label class="advanced-only">Photo material
-              <select id="photoMaterial">
-                <option value="0.10">Plain paper - approx. 0.10 mm</option>
-                <option value="0.20">Matte photo paper - approx. 0.20 mm</option>
-                <option value="0.24" selected>Glossy photo paper - approx. 0.24 mm</option>
-                <option value="0.28">Instant-film print - approx. 0.28 mm</option>
-                <option value="custom">Custom thickness</option>
-              </select>
-            </label>
-            <label id="photoThicknessLabel" class="hidden advanced-only">Thickness per photo (mm)<input id="photoThickness" type="number" min="0.05" max="1" step="0.01" value="0.24" /></label>
-          </section>
-
-          <section class="control-group advanced-only">
-            <h2>3. Output sheet</h2>
-            <label>Paper size
-              <select id="sheetSize"><option value="a4" selected>A4 - 297 x 210 mm</option><option value="4r">4R borderless - 102 x 152 mm</option><option value="6r">6R - 203 x 152 mm</option></select>
-            </label>
-            <label>Printer paper
-              <select id="printPaper"><option value="plain">Plain</option><option value="matte">Photo matte</option><option value="glossy" selected>Photo glossy</option></select>
-            </label>
-            <label>How you turn the finished photo
-              <select id="backOrientation"><option value="epson-left-right" selected>Epson L6170 / AirPrint - left to right</option><option value="left-right">Standard duplex - left to right</option><option value="top-bottom">Standard duplex - top to bottom</option></select>
-            </label>
-            <p class="privacy-note">Epson/AirPrint mode pre-rotates the metadata page 180° to cancel the opposite-edge flip produced by the L6170. It will look upside down in the PDF but print upright behind the photo.</p>
-            <label class="check"><input id="autoPhotoOrientation" type="checkbox" checked /> Match each print to the photo’s portrait or landscape orientation</label>
-            <p class="privacy-note">Portrait files use a portrait print frame; landscape files use a landscape frame. The metadata top edge follows the image top edge.</p>
-            <label class="check"><input id="showPrintGuides" type="checkbox" checked /> Show A4 orientation guide in preview</label>
-            <div class="inline-fields">
-              <label>Margin (mm)<input id="pageMargin" type="number" min="0" max="20" step="1" value="6" /></label>
-              <label>Gap (mm)<input id="photoGap" type="number" min="0" max="15" step="1" value="4" /></label>
+            <div id="heroFallback" class="fallback">
+              <img src="./assets/package-three-quarter.png" alt="Closed Photo Packager wrap at three-quarter view" />
             </div>
-            <div class="inline-fields">
-              <label>Back X correction (mm)<input id="backOffsetX" type="number" min="-10" max="10" step="0.25" value="0" /></label>
-              <label>Back Y correction (mm)<input id="backOffsetY" type="number" min="-10" max="10" step="0.25" value="0" /></label>
-            </div>
-            <p class="privacy-note">After a test print, use these corrections only for a consistent printer feed offset. Positive values move metadata right or down.</p>
-          </section>
-
-          <section class="control-group advanced-only">
-            <h2>4. Metadata backs</h2>
-            <label class="check"><input id="metaDate" type="checkbox" checked /> Date taken</label>
-            <label class="check"><input id="metaCamera" type="checkbox" checked /> Camera and lens</label>
-            <label class="check"><input id="metaExposure" type="checkbox" checked /> Shutter, aperture, ISO and focal length</label>
-            <label class="check"><input id="metaLocation" type="checkbox" /> GPS coordinates, when embedded</label>
-            <label class="check"><input id="metaFilename" type="checkbox" checked /> Filename</label>
-            <label class="check"><input id="metaPixels" type="checkbox" /> Pixel dimensions</label>
-            <p class="privacy-note">GPS is opt-in and processed locally. Coordinates are never sent to a map or geocoding service.</p>
-          </section>
-
-          <section class="control-group">
-            <h2>3. Cover</h2>
-            <label>Visual direction
-              <select id="designStyle">
-                <option value="bureau" selected>Bureau Label — closest to reference</option>
-                <option value="museum">Museum Archive — quiet and editorial</option>
-                <option value="contact">Contact Sheet — graphic and technical</option>
-              </select>
-            </label>
-            <p class="privacy-note">The selected direction styles both the cover and metadata backs.</p>
-            <label class="advanced-only">Container preview
-              <select id="casePreviewFace"><option value="outside" selected>Outside artwork</option><option value="inside">Inside cut + fold guides</option></select>
-            </label>
-            <label class="check advanced-only"><input id="printCoverArtwork" type="checkbox" checked /> Print cover artwork</label>
-            <label class="check advanced-only"><input id="showPhotoCount" type="checkbox" checked /> Show number of photos</label>
-            <label class="check advanced-only"><input id="printSideArtwork" type="checkbox" checked /> Print on box sides</label>
-            <label class="check advanced-only"><input id="showFoldInstructions" type="checkbox" checked /> Show numbered folding instructions inside</label>
-            <label class="advanced-only">Side label<input id="sideLabel" maxlength="36" value="PHOTO ARCHIVE" /></label>
-            <label class="advanced-only">Container stock
-              <select id="caseMaterial">
-                <option value="0.16">120 gsm - approx. 0.16 mm</option>
-                <option value="0.21" selected>160 gsm - approx. 0.21 mm</option>
-                <option value="0.27">200 gsm - approx. 0.27 mm</option>
-                <option value="0.32">250 gsm - approx. 0.32 mm</option>
-                <option value="custom">Custom caliper</option>
-              </select>
-            </label>
-            <label id="caseThicknessLabel" class="hidden advanced-only">Stock thickness (mm)<input id="caseThickness" type="number" min="0.1" max="1" step="0.01" value="0.21" /></label>
-            <label>Quantity line<input id="quantity" maxlength="30" value="Photo Set" /></label>
-            <label>Title line 1<input id="titleOne" maxlength="30" value="Instax Wide" /></label>
-            <label>Title line 2<input id="titleTwo" maxlength="30" value="Photo Case" /></label>
-            <label>Subtitle<input id="subtitle" maxlength="40" value="Custom archive" /></label>
-            <div class="inline-fields colours advanced-only">
-              <label>Paper<input id="paperColor" type="color" value="#f5e8c8" /></label>
-              <label>Ink<input id="inkColor" type="color" value="#c94f3f" /></label>
-            </div>
-          </section>
-        </aside>
-
-        <section class="preview" aria-label="Printable preview">
-          <div class="preview-header">
-            <div><strong id="previewTitle">Photo fronts</strong><span id="previewSummary">Select photos to begin</span></div>
-            <div class="page-nav"><button id="prevPage" type="button" aria-label="Previous page">←</button><span id="pageIndicator">1 / 1</span><button id="nextPage" type="button" aria-label="Next page">→</button></div>
           </div>
-          <div class="sheet-stage"><div id="sheetViewport" class="sheet-viewport"></div></div>
-          <div id="fitMessage" class="fit-message" aria-live="polite"></div>
         </section>
-      </section>
+
+        <hr class="rule thin" />
+
+        <section class="two" aria-label="Two ways to use Photo Packager">
+          <article class="card">
+            <p class="price">Home use · free</p>
+            <h2>Print it yourself</h2>
+            <p>Select photos, download exact-size PDFs, cut and fold. Nothing is uploaded. Built for an A4 printer.</p>
+            <a class="btn" href="./studio.html">Open the studio</a>
+          </article>
+          <article class="card">
+            <p class="price">Posted · $88</p>
+            <h2>Print and ship</h2>
+            <p>I print the same set and post it. Pay, send a private photo link, and I make and mail it. Tips welcome.</p>
+            <a class="btn ghost" href="./commission.html">Place an order</a>
+          </article>
+        </section>
+
+        <hr class="rule thin" />
+
+        <p class="section-kicker">How it works</p>
+        <h2 class="section">Select, print, fold</h2>
+        <div class="steps">
+          <div class="step"><b>01</b><strong>Select</strong><span>Instax Mini, Wide, 4R, square, or custom. Files never leave the browser.</span></div>
+          <div class="step"><b>02</b><strong>Lay out</strong><span>Photo fronts with matching backs: date, camera, exposure. GPS only if you choose.</span></div>
+          <div class="step"><b>03</b><strong>Print</strong><span>Exact A4 PDFs at 100%, with duplex compensation for Epson and AirPrint.</span></div>
+          <div class="step"><b>04</b><strong>Fold</strong><span>One sheet, one wide tab, no glue. The sleeve is sized to your stack.</span></div>
+        </div>
+
+        <hr class="rule thin" />
+
+        <section class="specimen">
+          <figure>
+            <img src="./assets/package-three-quarter.png" alt="Closed Photo Packager wrap at three-quarter view, cover artwork on top" />
+            <figcaption>Cover artwork</figcaption>
+          </figure>
+          <div class="labels">
+            <div class="museum-label">
+              <small>The sleeve</small>
+              <strong>No-glue wrap</strong>
+              <p>Inward flaps and a single locking tab, cut to the prints you actually made — not a generic box.</p>
+            </div>
+            <div class="museum-label">
+              <small>The backs</small>
+              <strong>Photo backs</strong>
+              <p>Date, camera, lens, and exposure from the file. Three visual styles. GPS stays off unless you tick it.</p>
+            </div>
+            <div class="museum-label">
+              <small>Optional</small>
+              <strong>Leave a tip</strong>
+              <p>The studio stays free. A tip is welcome if the tool was useful.</p>
+              <a class="btn" data-tip-jar hidden href="#">Leave a tip</a>
+            </div>
+          </div>
+        </section>
+
+        <footer class="site-footer">
+          <span>Photo Packager · files stay on your device</span>
+          <span>
+            <a href="./studio.html">Studio</a>
+            ·
+            <a href="./commission.html">Print &amp; ship</a>
+          </span>
+        </footer>
+      </div>
     </main>
-    <dialog id="advancedDialog" aria-labelledby="advancedTitle">
-      <div class="dialog-header"><div><p class="eyebrow">Fine tuning</p><h2 id="advancedTitle">Advanced settings</h2></div><button id="closeAdvancedButton" class="secondary" type="button">Done</button></div>
-      <div id="advancedBody" class="advanced-body"></div>
-    </dialog>
-    <div id="printRoot" aria-hidden="true"></div>
-    <script src="./app.js?v=27"></script>
+    <script src="./site-config.js"></script>
+    <script src="./site-tip.js"></script>
+    <script type="module" src="./hero-scene.js?v=21"></script>
   </body>
 </html>
