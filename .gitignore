@@ -11,3 +11,4 @@ output/pdf/*.pdf
 !.env.example
 .idea/
 .vscode/
+.vercel
